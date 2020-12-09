@@ -8,7 +8,7 @@ import java.util.Set;
 public class Entries {
 
     /**
-     * Part 1
+     * Part 1, O(n^2)
      */
     Set<Integer> findTwoEntries (ArrayList<Integer> nums) {
         Set<Integer> matching = new HashSet<>();
@@ -23,8 +23,9 @@ public class Entries {
         }
         return matching;
     }
+
     /**
-     * Part 2
+     * Part 2, O(n^3)...
      */
     Set<Integer> findThreeEntries (ArrayList<Integer> nums) {
         Set<Integer> matching = new HashSet<>();
@@ -50,12 +51,12 @@ public class Entries {
 
         // Part 1
         Set<Integer> matchingTwoEntries = et.findTwoEntries(nums);
-        System.out.println("The multiplication of the two entries that sum to 2020: ");
+        System.out.println("The multiplication of the two numbers that sum to 2020: ");
         System.out.println(matchingTwoEntries);
 
         // Part 2
         Set<Integer> matchingThreeEntries = et.findThreeEntries(nums);
-        System.out.println("The multiplication of the three entries that sum to 2020: ");
+        System.out.println("The multiplication of the three numbers that sum to 2020: ");
         System.out.println(matchingThreeEntries);
     }
 
