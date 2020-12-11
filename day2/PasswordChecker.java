@@ -1,55 +1,92 @@
-import java.io.FileNotFoundException;
-import java.io.File;
-import java.util.*; 
-import java.util.stream.*; 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PasswordChecker {
 
-    public static void main(String[] args){
-        ArrayList<String> correctPw = new ArrayList<>();
-         
-        String filepath = "input.txt";
-        try {
-            File obj = new File(filepath);
-            Scanner sn = new Scanner(obj);
-            while (sn.hasNextLine()) {
-                //---------------Read input-----------------------
-                // Retrieves the bounds, [0] => lo, [1] => hi
-                String line = sn.next();
-                List<Integer> bounds = Arrays.stream(line.split("-"))
+    // Assuming that numbers are separated by the regex "-"
+    public int[] getBounds(String num) {
+        int[] bounds = Arrays.stream(num.split("-"))
                         .map(Integer::parseInt)
-                        .collect(Collectors.toList());
-                
-                // The char to be checked
-                String letter = sn.next().chars()
-                        .filter(Character::isLetter)
-                        .mapToObj(Character::toString)
-                        .collect(Collectors.joining());
+                        .mapToInt(x -> x).toArray();
+        return bounds;
+    }
 
-                // The password
-                String pw = sn.next();
+    public char getLetter(String letter) {
+        String lt = letter.chars()
+                .filter(Character::isLetter)
+                .mapToObj(Character::toString)
+                .collect(Collectors.joining());
+        return lt.charAt(0);
+    }
 
-                //---------------Logic----------------------------
-
-                // Count how many times the char appears in the pw
-                int count = 0;
-                for (int i = 0; i < pw.length(); i++) {
-                    if (pw.charAt(i) == letter.charAt(0)) 
-                        count++;
-                }
-
-                // Check if the pw satisfies the predicate (bounds)
-                if (count >= bounds.get(0) && count <= bounds.get(1)){
-                    correctPw.add(pw);                   
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Parse error");
-            e.printStackTrace();
+    /**
+     * Part 1
+     */
+    public boolean withinBounds(String pw, char ch, int lo, int hi) {
+        int count = 0;
+        for (int i = 0; i < pw.length(); i++) {
+            if (pw.charAt(i) == ch) 
+                count++;
         }
+        return count >= lo && count <= hi ? true : false;
+    }
 
-        System.out.println("Valid passwords: ");
-        System.out.println(correctPw);
-        System.out.println("Number of valid passwords: " + correctPw.size());
+    /**
+     * Part 2
+     */
+    public boolean definedAtPos(String pw, char ch, int x1, int x2) {
+        int count = 0;
+        if (pw.charAt(x1) == ch) 
+            count++;
+        if (pw.charAt(x2) == ch)
+            count++;
+        return count == 1; 
+    }
+
+    public static void main(String[] args) throws IOException {
+         String filepath = "input.txt";
+         //Store each line as a string in an array
+         List<String> input = Files.readAllLines(Path.of(filepath));
+         // Remove newlines [\n]
+         input.removeAll(Collections.singleton(""));
+         PasswordChecker pb = new PasswordChecker();
+         
+         int i = 0;
+         int policyOne = 0;
+         int policyTwo = 0;
+
+         while(true) {
+             try {
+                 Scanner sn = new Scanner(input.get(i));
+                 int[] bounds = pb.getBounds(sn.next());
+                 char ch = pb.getLetter(sn.next());
+                 String pw = sn.next();
+
+                 // Part 1
+                 if (pb.withinBounds(pw, ch, bounds[0], bounds[1]))
+                     policyOne++;
+
+                 //P Part 2
+                 if (pb.definedAtPos(pw, ch, bounds[0]-1, bounds[1]-1))
+                     policyTwo++;
+                     
+                 i++;
+                 // Break out if index exceedes array size
+                 if(i >= input.size())
+                     break;
+
+             } catch (Exception e) {
+                 System.out.println("Parse error");
+                 e.printStackTrace();
+                 break;
+             }
+         }
+
+         System.out.println("Number of valid passwords with regards to policy 1: " + policyOne);
+         System.out.println("Number of valid passwords with regards to policy 2: " + policyTwo);
     }
 }
+
