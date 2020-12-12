@@ -19,9 +19,9 @@ public class PassportChecker {
         return input;
     }
 
-    //########################################
+    // ########################################
     // Part 1
-    //########################################
+    // ########################################
 
     // Checks if the entry has the required fields
     public boolean validateFields(List<String> entry) {
@@ -51,11 +51,9 @@ public class PassportChecker {
         return count;
     }
 
-
-    //########################################
+    // ########################################
     // Part 2
-    //########################################
-    
+    // ########################################
 
     public boolean checkBirthYear(int by) {
         return by >= 1920 && by <= 2002;
@@ -84,7 +82,8 @@ public class PassportChecker {
                 default:
                     return false;
             }
-        } else return false;
+        } else
+            return false;
     }
 
     public boolean checkHairColour(String hcl) {
@@ -92,7 +91,7 @@ public class PassportChecker {
             return false;
 
         int count = 0;
-        for(int i = 1; i < hcl.length(); i++) {
+        for (int i = 1; i < hcl.length(); i++) {
             if (!isDigitOrLetter(hcl.charAt(i)))
                 return false;
             count++;
@@ -111,7 +110,7 @@ public class PassportChecker {
 
     public boolean checkPID(String pid) {
         for (int i = 0; i < pid.length(); i++) {
-            if(!Character.isDigit(pid.charAt(i)))
+            if (!Character.isDigit(pid.charAt(i)))
                 return false;
         }
         return pid.length() == 9;
@@ -127,10 +126,10 @@ public class PassportChecker {
         return count;
     }
 
-    // Stores each key:value pair 
+    // Stores each key:value pair
     public boolean validatePassportB(String pp) {
         Scanner sn = new Scanner(pp);
-        Map<String,String> fields = new HashMap<>();
+        Map<String, String> fields = new HashMap<>();
         while (sn.hasNext()) {
             String[] keyVal = sn.next().split(":");
             fields.put(keyVal[0], keyVal[1]);
@@ -141,7 +140,7 @@ public class PassportChecker {
     /**
      * This is disgusting
      */
-    public boolean validateFieldsB(Map<String,String> fields) {
+    public boolean validateFieldsB(Map<String, String> fields) {
         List<String> rules = Arrays.asList("hcl", "iyr", "eyr", "ecl", "pid", "byr", "hgt");
         // Check if all keys are present
         for (String s : rules) {
@@ -154,37 +153,37 @@ public class PassportChecker {
                 case "byr":
                     if (checkBirthYear(Integer.parseInt(fields.get(key))))
                         continue;
-                    else 
+                    else
                         return false;
                 case "iyr":
                     if (checkIssueYear(Integer.parseInt(fields.get(key))))
                         continue;
-                    else 
+                    else
                         return false;
                 case "eyr":
                     if (checkExpYear(Integer.parseInt(fields.get(key))))
                         continue;
-                    else 
+                    else
                         return false;
                 case "hgt":
                     if (checkHeight(fields.get(key)))
                         continue;
-                    else 
+                    else
                         return false;
                 case "hcl":
                     if (checkHairColour(fields.get(key)))
                         continue;
-                    else 
+                    else
                         return false;
                 case "ecl":
                     if (checkEyeColour(fields.get(key)))
                         continue;
-                    else 
+                    else
                         return false;
                 case "pid":
                     if (checkPID(fields.get(key)))
                         continue;
-                    else 
+                    else
                         return false;
                 default:
                     break;
@@ -201,7 +200,6 @@ public class PassportChecker {
         List<String> input = pc.parsePassports(filepath);
         int nValidPassA = pc.validateBatchA(input);
         System.out.println("Part 1: " + nValidPassA + " valid passports");
-        
 
         // Part 2
         int nValidPassB = pc.validateBatchB(input);
