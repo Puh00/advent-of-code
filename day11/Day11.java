@@ -1,6 +1,8 @@
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * # (L) - Empty seat and no occupied seats adjacent to it -> occupied # (#) - Occupied and 4 or
@@ -38,9 +40,13 @@ public class Day11 {
       int cd = col + xDir[dir];
 
       while (rd < input.size() && rd >= 0 && cd < input.get(0).length() && cd >= 0) {
-
         char c = input.get(rd).charAt(cd);
-        if (c == '#') count++;
+        if (c == '#') {
+          count++;
+          break;
+        }
+        else if (c == 'L')
+          break;
 
         rd += yDir[dir];
         cd += xDir[dir];
@@ -68,7 +74,7 @@ public class Day11 {
   public static void main(String[] args) throws IOException {
     Day11 dy = new Day11();
     List<String> input =
-        Files.readAllLines(Path.of("/Users/nam/dev/advent-of-code-2020/day11/input.txt"));
+        Files.readAllLines(Path.of("input.txt"));
     boolean runPartB = true;
 
     /*int t = dy.neighbours2(input, 4, 4);
@@ -96,6 +102,7 @@ public class Day11 {
         }
         round.add(sb.toString());
       }
+      dy.printSeats(round);
       // Stabilized
       if (input.equals(round)) break;
       input = round;
