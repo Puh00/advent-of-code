@@ -4,19 +4,15 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * # (L) - Empty seat and no occupied seats adjacent to it -> occupied # (#) - Occupied and 4 or
- * more seats adjacent are occupied -> empty - | Iterate until no changes are made
- */
 public class Day11 {
 
-  // For searching in all 8 directions,
+  // All 8 directions
   // {Left Up, Left, Down Left, Up, Down, Right, Down Right}
   private static final int[] xDir = {-1, -1, -1, 0, 0, 1, 1, 1};
   private static final int[] yDir = {-1, 0, 1, -1, 1, -1, 0, 1};
 
   /** Traverse adjacent nodes to find number of occupied spots */
-  public int neighbours(List<String> input, int x, int y) {
+  public int adjacentNeighbours(List<String> input, int x, int y) {
     int rows = input.size();
     int columns = input.get(0).length();
     int count = 0;
@@ -32,22 +28,24 @@ public class Day11 {
     return count;
   }
 
-  public int neighbours2(List<String> input, int row, int col) {
+  /** Searches for the first seat in each direction and counts the occurrences of occupied seats */
+  public int distantNeighbours(List<String> input, int row, int col) {
     int count = 0;
+    // Iterate through each of the 8 directions
     for (int dir = 0; dir < 8; dir++) {
       // Starting point for the current direction
       int rd = row + yDir[dir];
       int cd = col + xDir[dir];
 
+      // Loop while within bounds
       while (rd < input.size() && rd >= 0 && cd < input.get(0).length() && cd >= 0) {
-        char c = input.get(rd).charAt(cd);
-        if (c == '#') {
+        char seat = input.get(rd).charAt(cd);
+        if (seat == '#') {
           count++;
           break;
-        }
-        else if (c == 'L')
-          break;
+        } else if (seat == 'L') break;
 
+        // Keep on moving in the current direction
         rd += yDir[dir];
         cd += xDir[dir];
       }
@@ -55,6 +53,7 @@ public class Day11 {
     return count;
   }
 
+  /** Prints the seats in a readable way */
   public void printSeats(List<String> input) {
     for (String s : input) System.out.println(s);
     System.out.println();
@@ -73,15 +72,12 @@ public class Day11 {
 
   public static void main(String[] args) throws IOException {
     Day11 dy = new Day11();
-    List<String> input =
-        Files.readAllLines(Path.of("input.txt"));
+    List<String> input = Files.readAllLines(Path.of("input.txt"));
     boolean runPartB = true;
 
-    /*int t = dy.neighbours2(input, 4, 4);
-    System.out.println(t);*/
-    // Part 1
-
+    boolean hasChanged = false;
     while (true) {
+      hasChanged = false;
       List<String> round = new ArrayList<>();
 
       for (int row = 0; row < input.size(); row++) {
@@ -89,22 +85,31 @@ public class Day11 {
         for (int col = 0; col < input.get(row).length(); col++) {
           char seat = input.get(row).charAt(col);
           if (!runPartB) {
-            int adj = dy.neighbours(input, row, col);
-            if (seat == 'L' && adj < 1) sb.append('#');
-            else if (seat == '#' && adj > 3) sb.append('L');
-            else sb.append(input.get(row).charAt(col));
+            // Part 1
+            int occupiedSeats = dy.adjacentNeighbours(input, row, col);
+            if (seat == 'L' && occupiedSeats <= 0) {
+              sb.append('#');
+              hasChanged = true;
+            } else if (seat == '#' && occupiedSeats >= 4) {
+              sb.append('L');
+              hasChanged = true;
+            } else sb.append(input.get(row).charAt(col));
           } else {
-            int adj = dy.neighbours2(input, row, col);
-            if (seat == 'L' && adj <= 0) sb.append('#');
-            else if (seat == '#' && adj >= 5) sb.append('L');
-            else sb.append(input.get(row).charAt(col));
+            // Part 2
+            int occupiedSeats = dy.distantNeighbours(input, row, col);
+            if (seat == 'L' && occupiedSeats <= 0) {
+              sb.append('#');
+              hasChanged = true;
+            } else if (seat == '#' && occupiedSeats >= 5) {
+              sb.append('L');
+              hasChanged = true;
+            } else sb.append(input.get(row).charAt(col));
           }
         }
         round.add(sb.toString());
       }
-      dy.printSeats(round);
-      // Stabilized
-      if (input.equals(round)) break;
+      // Seat movement has stagnated
+      if (!hasChanged) break;
       input = round;
     }
 
