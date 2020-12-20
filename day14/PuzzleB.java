@@ -48,7 +48,8 @@ public class PuzzleB {
         }
       }
 
-      // Utilize the fact that n digits of the binary number is 2^n in decimal, i.e '10' -> 1*2^1
+      // Utilize the fact that n digits of the binary number has 2^n permutations
+      //    i.e n = 2: 00, 01, 10, 11 
       // Write the value to each permutation of the binary number
       double k = Math.pow(2, xs.size());
       for (int i = 0; i < k; i++) {
