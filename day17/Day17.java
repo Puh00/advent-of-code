@@ -33,7 +33,7 @@ public class Day17 {
 
   public Set<Coord> stepSimulation(Set<Coord> activeNodes) {
     Set<Coord> newNodes = new HashSet<>();
-    Map<Coord,Integer> inactives = new HashMap<>();
+    Map<Coord, Integer> inactives = new HashMap<>();
 
     for (Coord c : activeNodes) {
       Set<Coord> neighbours = getNeighbours(c);
@@ -50,14 +50,12 @@ public class Day17 {
       }
 
       // Active remains active if 2 or 3 of its neighbours are active
-      if (nActiveNodes == 2 || nActiveNodes == 3)
-        newNodes.add(c);
+      if (nActiveNodes == 2 || nActiveNodes == 3) newNodes.add(c);
     }
 
     // Inactive becomes active if 3 of its neighbours are active
     for (Coord c : inactives.keySet()) {
-      if (inactives.get(c) == 3)
-        newNodes.add(c);
+      if (inactives.get(c) == 3) newNodes.add(c);
     }
 
     return newNodes;
