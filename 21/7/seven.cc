@@ -25,7 +25,6 @@ void solve(vector<string> input, const bool part_b = false)
 {
   vector<int> positions = split_by_delimiter(input.front(), ',');
   int max_x = *max_element(positions.begin(), positions.end());
-  bool first_iter = true;
   int least_fuel_cost = -1;
 
   // formula for sum of first 'n' integers
