@@ -88,18 +88,18 @@ set<char> find_9(const vector<set<char>> &segs, set<char> three)
 std::pair<set<char>, set<char>> find_2_5(const vector<set<char>> &segs, set<char> nine)
 {
   // if digit diff with 9 is an empty set then it is 5
-  set<char> five = _diff_size(segs.front(), nine) == 0 ? segs.front() : segs.back();
+  const set<char> five = _diff_size(segs.front(), nine) == 0 ? segs.front() : segs.back();
   // the other is 2
-  set<char> two = _diff_size(segs.front(), nine) != 0 ? segs.front() : segs.back();
+  const set<char> two = _diff_size(segs.front(), nine) != 0 ? segs.front() : segs.back();
   return {two, five};
 }
 
 std::pair<set<char>, set<char>> find_0_6(const vector<set<char>> &segs, set<char> five)
 {
   // if 5 diff with a digit is an empty set then it must be 6
-  set<char> six = _diff_size(five, segs.front()) == 0 ? segs.front() : segs.back();
+  const set<char> six = _diff_size(five, segs.front()) == 0 ? segs.front() : segs.back();
   // the other is 0
-  set<char> zero = _diff_size(five, segs.front()) != 0 ? segs.front() : segs.back();
+  const set<char> zero = _diff_size(five, segs.front()) != 0 ? segs.front() : segs.back();
   return {zero, six};
 }
 
@@ -112,10 +112,7 @@ map<int, vector<set<char>>> map_pattern_to_length(const vector<string> &patterns
     if (m.count(s.size()))
       m[s.size()].emplace_back(set<char>(s.begin(), s.end()));
     else
-    {
-      vector<set<char>> tmp = {set<char>(s.begin(), s.end())};
-      m[s.size()] = tmp;
-    }
+      m[s.size()] = {set<char>(s.begin(), s.end())};
   }
   return m;
 }
@@ -126,7 +123,7 @@ map<set<char>, int> decode_input(const vector<string> &lhs)
   auto m = map_pattern_to_length(lhs);
   map<set<char>, int> decoded;
 
-  // easy numbers
+  // numbers with unique size
   decoded[m[2].front()] = 1;
   decoded[m[4].front()] = 4;
   decoded[m[3].front()] = 7;
@@ -168,13 +165,10 @@ void solve(const vector<string> &input)
     map<set<char>, int> decoded = decode_input(entry.lhs);
     string output_value = "";
     for (auto const pattern : entry.rhs)
-    {
-      set<char> key(pattern.begin(), pattern.end());
-      output_value += std::to_string(decoded[key]);
-    }
+      output_value += std::to_string(decoded[set<char>(pattern.begin(), pattern.end())]);
     sum += std::stoi(output_value);
   }
-  std::cout << "Sum > " << sum << endl;
+  std::cout << "Sum of output values > " << sum << endl;
 }
 
 int main()
@@ -182,7 +176,7 @@ int main()
   std::ifstream file("input.txt");
   vector<string> input;
   for (string line; std::getline(file, line);)
-    input.push_back(line);
+    input.emplace_back(line);
 
   solve(input);
 
