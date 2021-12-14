@@ -35,16 +35,15 @@ void expand(std::map<std::string, char>& policy, std::string const& polymer,
   }
   // store the frequency of each char in the polymer
   std::map<char, long long> freq;
-  for (auto const& kv : pair_count)
-    freq[kv.first[0]] = freq[kv.first[0]] + kv.second;
+  for (auto const& kv : pair_count) freq[kv.first[0]] += kv.second;
 
+  // compare the map values instead of keys
+  auto const& value_comp = [](auto const& p1, auto const& p2) {
+    return p1.second < p2.second;
+  };
   // if only c++14 had std::minmax_element support
-  auto max_kv = *std::max_element(
-      freq.begin(), freq.end(),
-      [](auto const& p1, auto const& p2) { return p1.second < p2.second; });
-  auto min_kv = *std::min_element(
-      freq.begin(), freq.end(),
-      [](auto const& p1, auto const& p2) { return p1.second < p2.second; });
+  auto max_kv = *std::max_element(freq.begin(), freq.end(), value_comp);
+  auto min_kv = *std::min_element(freq.begin(), freq.end(), value_comp);
   // + 1 due to weird off-by-one bug
   std::cout << max_kv.second - min_kv.second + 1 << std::endl;
 }
